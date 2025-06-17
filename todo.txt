@@ -1,0 +1,28 @@
+// TODO 🛠️ Proyecto Ruleta Promo - Lucel Iluminación
+
+1. 🔐 Proteger página privada (stats o admin):
+   - Crear nueva ruta `/admin` o `/dashboard`.
+   - Middleware/API handler que permita el acceso solo a ciertas personas (usuarios validados por UUID, JWT o IP temporal).
+   - Interfaz sencilla para listar participantes y premios entregados.
+
+2. 🎁 Limitar premios únicos:
+   - Que solo puedan tocarse 2 premios tipo "product" (ej. 2 ventiladores).
+   - Una vez entregados los 2, deben desaparecer de la ruleta dinámica o marcarse como no disponibles.
+
+3. ✅ Seguridad del código:
+   - Confirmar que los códigos generados por la API son 100% únicos (se valida contra MongoDB antes de insertar).
+   - Añadir validación extra si hiciera falta para prevenir duplicados en condiciones extremas.
+
+4. 🎨 Mejorar estilos:
+   - Pulir visual del modal (animación, botón WhatsApp, copiar código).
+   - Hacer la ruleta responsive y vistosa (quizás meter animaciones con Framer Motion o Tailwind Transitions).
+
+5. 📲 Integrar con QR:
+   - Generar QR que apunte directamente a la landing con la ruleta.
+   - Usar un generador como `qrcode.react` o generar uno y pegarlo donde sea necesario.
+
+6. 📦 Mejorar estructura del repo:
+   - Añadir `README.md` con instrucciones para dev y despliegue.
+   - Crear `.env.example` con variables necesarias.
+   - Limpiar archivos y carpetas innecesarias del template de Astro.
+
