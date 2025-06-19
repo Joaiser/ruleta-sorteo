@@ -26,3 +26,7 @@
    - Crear `.env.example` con variables necesarias.
    - Limpiar archivos y carpetas innecesarias del template de Astro.
 
+
+7. Arreglar el tema de coger la IP y ver como podemos hacerlo bien.
+
+8. Podemos hacer rollo como en el concursillo, para que cuando empiezas hasta que acabes te guie, como una voz, así queda más guay.

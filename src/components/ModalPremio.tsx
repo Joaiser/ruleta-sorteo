@@ -1,6 +1,7 @@
 // src/components/ModalPremio.tsx
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, Share2 } from 'lucide-react'
+import { Check, Copy, Share2 } from 'lucide-react'
+import { useState } from 'react'
 
 interface ModalPremioProps {
     resultado: {
@@ -14,6 +15,8 @@ interface ModalPremioProps {
 }
 
 export function ModalPremio({ resultado, onClose }: ModalPremioProps) {
+    const [copy, setCopy] = useState(false)
+
     if (!resultado) return null
 
     const textoPremio =
@@ -22,6 +25,12 @@ export function ModalPremio({ resultado, onClose }: ModalPremioProps) {
             : resultado.prize.value
 
     const textoWhatsApp = encodeURIComponent(`¡He ganado ${textoPremio} en la ruleta de Lucel! Usa mi código: ${resultado.code}`)
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(resultado.code)
+        setCopy(true)
+        setTimeout(() => setCopy(false), 2000)
+    }
 
     return (
         <AnimatePresence>
@@ -41,15 +50,30 @@ export function ModalPremio({ resultado, onClose }: ModalPremioProps) {
                     <h2 className='text-2xl font-bold mb-4'>🎉 ¡Premio conseguido!</h2>
                     <p className='text-lg'>Has ganado:</p>
                     <p className='text-xl font-semibold my-2'>{textoPremio}</p>
-                    <div className='bg-gray-100 rounded p-2 mt-2 flex items-center justify-between'>
-                        <code className='text-md font-mono'>{resultado.code}</code>
-                        <button
-                            onClick={() => navigator.clipboard.writeText(resultado.code)}
-                            className='p-1 hover:text-blue-600'
-                            title='Copiar código'
-                        >
-                            <Copy size={18} />
-                        </button>
+
+                    <div className='relative'>
+                        <div className='bg-gray-100 rounded p-2 mt-2 flex items-center justify-between'>
+                            <code className='text-md font-mono'>{resultado.code}</code>
+                            <button
+                                onClick={handleCopy}
+                                className='p-1 hover:text-blue-600 cursor-pointer'
+                                title='Copiar código'
+                            >
+                                {copy ? <Check size={18} className='text-green-600' /> : <Copy size={18} />}
+                            </button>
+                        </div>
+
+                        {copy && (
+                            <motion.div
+                                className='absolute right-0 top-[-1.5rem] text-sm text-green-600'
+                                initial={{ opacity: 0, y: -5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -5 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                📋 ¡Copiado!
+                            </motion.div>
+                        )}
                     </div>
 
                     <a
@@ -64,7 +88,7 @@ export function ModalPremio({ resultado, onClose }: ModalPremioProps) {
 
                     <button
                         onClick={onClose}
-                        className='absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl font-bold'
+                        className='absolute top-2 right-3 text-gray-500 hover:text-red-500 text-xl font-bold cursor-pointer'
                     >
                         ×
                     </button>

@@ -1,0 +1,27 @@
+---
+import { validateToken } from "@/utils/validateAdminToken";
+
+const token = Astro.cookies.get("admin_token")?.value;
+
+//Validar el token
+if (!validateToken(token)) {
+    return Astro.redirect("/dashboardAdmin/login");
+}
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <title>Panel de Administración - Lucel</title>
+    </head>
+    <body class="p-8 bg-gray-50 text-gray-800">
+        <h1 class="text-2xl font-bold mb-6">📊 Dashboard de Premios</h1>
+
+        <!-- Contenido que se mete desde la página interna -->
+        <slot />
+
+        <footer class="mt-8 text-sm text-gray-500">
+            Lucel Iluminación © {new Date().getFullYear()}
+        </footer>
+    </body>
+</html>

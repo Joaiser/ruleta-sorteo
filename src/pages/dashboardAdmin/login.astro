@@ -1,0 +1,29 @@
+---
+const formError = Astro.url.searchParams.get("error");
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <title>Login</title>
+    </head>
+    <body class="p-8 max-w-md mx-auto">
+        <h1 class="text-xl font-bold mb-4">Acceso al Panel</h1>
+
+        <form method="POST" action="/api/login" class="space-y-4">
+            <input
+                type="password"
+                name="clave"
+                placeholder="Clave de acceso"
+                class="border px-3 py-2 w-full rounded"
+            />
+            <button
+                type="submit"
+                class="bg-blue-600 text-white px-4 py-2 rounded"
+            >
+                Entrar
+            </button>
+            {formError && <p class="text-red-500">Clave incorrecta</p>}
+        </form>
+    </body>
+</html>

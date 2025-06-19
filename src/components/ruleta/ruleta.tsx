@@ -110,7 +110,7 @@ export function Ruleta() {
             <div className='flex justify-center content-center'>
                 <button
                     onClick={handleSpin}
-                    className='bg-blue-600 text-white px-4 py-2 rounded w-32'>
+                    className='bg-blue-600 text-white px-4 py-2 rounded w-32 cursor-pointer'>
                     Girar Ruleta!
                 </button>
             </div>

@@ -1,3 +1,5 @@
+//Verificacion de usuarios normales
+
 import { randomUUID } from "crypto"
 import type { APIRoute } from "astro"
 

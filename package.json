@@ -6,14 +6,18 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "create-admin": "ts-node scripts/createAdmins.ts"
   },
   "dependencies": {
+    "@astrojs/node": "^9.2.2",
     "@astrojs/react": "^4.3.0",
     "@tailwindcss/vite": "^4.1.10",
     "astro": "^5.9.3",
+    "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
     "framer-motion": "^12.18.1",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.516.0",
     "mongodb": "^6.17.0",
     "react": "^18.2.0",
@@ -22,7 +26,10 @@
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6"
+    "@types/react-dom": "^19.1.6",
+    "ts-node": "^10.9.2"
   }
 }
