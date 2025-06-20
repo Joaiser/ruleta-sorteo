@@ -1,0 +1,20 @@
+---
+import { PrizeList } from "./components/PrizeList";
+import AdminLayout from "@/layouts/AdminLayout.astro";
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link rel="stylesheet" href="/src/styles/global.css" />
+    </head>
+    <body>
+        <AdminLayout>
+            <h1 class="text-2xl font-bold mb-4">🎁 Gestión de Premios</h1>
+            <PrizeList client:load />
+        </AdminLayout>
+    </body>
+</html>

@@ -15,5 +15,7 @@ if (!isAdminToken(token)) {
     <p>Bienvenida al panel privado. Aquí se listarán los premios y usuarios.</p>
 
     <!-- Aquí metes React o Astro Components del admin -->
-    <div id="root"><ParticipantsList client:load /></div>
+    <div id="root">
+        <ParticipantsList client:load />
+    </div>
 </AdminLayout>

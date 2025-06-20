@@ -101,14 +101,14 @@ export default function ParticipantsList() {
                             {p.status !== 'used' && (
                                 <button
                                     onClick={() => markAsUsed(p._id)}
-                                    className="bg-emerald-600 hover:bg-emerald-700 transition px-4 py-1.5 text-sm rounded-lg font-medium shadow"
+                                    className="bg-emerald-600 hover:bg-emerald-700 transition px-4 py-1.5 text-sm rounded-lg font-medium shadow cursor-pointer"
                                 >
                                     ✅ Marcar usado
                                 </button>
                             )}
                             <button
                                 onClick={() => deleteParticipant(p._id)}
-                                className="bg-red-600 hover:bg-red-700 transition px-4 py-1.5 text-sm rounded-lg font-medium shadow"
+                                className="bg-red-600 hover:bg-red-700 transition px-4 py-1.5 text-sm rounded-lg font-medium shadow cursor-pointer"
                             >
                                 🗑️ Borrar
                             </button>
