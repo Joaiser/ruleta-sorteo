@@ -1,5 +1,6 @@
 ---
 const formError = Astro.url.searchParams.get("error");
+import "@/styles/global.css";
 ---
 
 <!doctype html>
@@ -8,31 +9,67 @@ const formError = Astro.url.searchParams.get("error");
         <title>Login</title>
         <meta charset="UTF-8" />
     </head>
-    <body class="p-8 max-w-md mx-auto">
-        <h1 class="text-xl font-bold mb-4">Acceso al Panel</h1>
+    <body
+        class="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black flex items-center justify-center px-4"
+    >
+        <div
+            class="bg-white/10 backdrop-blur-md border border-white/20 shadow-xl rounded-2xl p-8 w-full max-w-md"
+        >
+            <h1 class="text-2xl font-semibold text-white mb-6 text-center">
+                🔐 Acceso al Panel
+            </h1>
 
-        <form method="POST" action="/api/login" class="space-y-4">
-            <input
-                type="text"
-                name="username"
-                placeholder="Usuario"
-                class="border px-3 py-2 w-full rounded"
-                required
-            />
-            <input
-                type="password"
-                name="password"
-                placeholder="Contraseña"
-                class="border px-3 py-2 w-full rounded"
-                required
-            />
-            <button
-                type="submit"
-                class="bg-blue-600 text-white px-4 py-2 rounded"
-            >
-                Entrar
-            </button>
-            {formError && <p class="text-red-500">Clave incorrecta</p>}
-        </form>
+            <form method="POST" action="/api/login" class="space-y-5">
+                <div>
+                    <label class="block text-sm text-white mb-1" for="username"
+                        >Usuario</label
+                    >
+                    <input
+                        id="username"
+                        type="text"
+                        name="username"
+                        placeholder="Tu usuario"
+                        class="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                    />
+                </div>
+
+                <div>
+                    <label class="block text-sm text-white mb-1" for="password"
+                        >Contraseña</label
+                    >
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="••••••••"
+                        class="w-full px-4 py-2 rounded-lg bg-white/10 text-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                    />
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full py-2 bg-blue-600 hover:bg-blue-700 transition rounded-lg text-white font-medium shadow"
+                >
+                    Entrar
+                </button>
+
+                {
+                    formError === "1" && (
+                        <p class="text-sm text-red-400 mt-2 text-center">
+                            ❌ Usuario o contraseña incorrectos
+                        </p>
+                    )
+                }
+                {
+                    formError === "expired" && (
+                        <p class="text-sm text-yellow-400 mt-2 text-center">
+                            ⚠️ Sesión expirada, vuelve a iniciar sesión.
+                        </p>
+                    )
+                }
+            </form>
+        </div>
     </body>
 </html>

@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken'
+import { isAdminToken } from "@/lib/auth/auth"
 
 export async function GET({ request }: { request: Request }) {
     const cookieHeader = request.headers.get('cookie') || '';
@@ -12,19 +12,16 @@ export async function GET({ request }: { request: Request }) {
     const token = cookies['admin_token'];
 
 
-    try {
-        const decoded = jwt.verify(token, import.meta.env.JWT_SECRET!);
-        if ((decoded as any).role !== 'admin') throw new Error("Not admin");
-
-        return new Response(JSON.stringify({ ok: true }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-        });
-    } catch {
+    if (!isAdminToken(token)) {
         return new Response(JSON.stringify({ ok: false }), {
             status: 401,
-            headers: { 'Content-Type': 'application/json' },
-        });
+            headers: { "Content-Type": "application/json" },
+        })
     }
+
+    return new Response(JSON.stringify({ ok: true }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+    })
 }
 

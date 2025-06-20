@@ -1,5 +1,13 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro";
+import { isAdminToken } from "@/lib/auth/auth";
+
+const token = Astro.cookies.get("admin_token")?.value;
+
+//Validar el token
+if (!isAdminToken(token)) {
+    return Astro.redirect("/dashboardAdmin/login?error=expired");
+}
 ---
 
 <AdminLayout>

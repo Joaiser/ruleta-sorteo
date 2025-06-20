@@ -1,14 +1,3 @@
----
-import { validateToken } from "@/utils/validateAdminToken";
-
-const token = Astro.cookies.get("admin_token")?.value;
-
-//Validar el token
-if (!validateToken(token)) {
-    return Astro.redirect("/dashboardAdmin/login");
-}
----
-
 <!doctype html>
 <html lang="es">
     <head>
