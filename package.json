@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "create-admin": "ts-node scripts/createAdmins.ts"
+    "create-admin": "node --loader ts-node/esm scripts/createAdmins.js"
   },
   "dependencies": {
     "@astrojs/node": "^9.2.2",
@@ -29,7 +29,6 @@
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
-    "ts-node": "^10.9.2"
+    "@types/react-dom": "^19.1.6"
   }
 }

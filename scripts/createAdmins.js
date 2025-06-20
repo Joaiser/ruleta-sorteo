@@ -13,7 +13,11 @@ async function main() {
 
     const hash = await bycrpt.hash(password, 10)
 
-    const client = new MongoClient(process.env.MONGODB_URI!)
+    if (!process.env.MONGODB_URI) {
+        console.error("❌ La variable de entorno MONGODB_URI no está definida.");
+        process.exit(1);
+    }
+    const client = new MongoClient(process.env.MONGODB_URI);
     await client.connect()
 
     const db = client.db(process.env.DB_NAME)
