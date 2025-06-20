@@ -3,14 +3,19 @@
     <head>
         <title>Panel de Administración - Lucel</title>
         <meta charset="UTF-8" />
-    </head>
-    <body class="p-8 bg-gray-50 text-gray-800">
-        <h1 class="text-2xl font-bold mb-6">📊 Dashboard de Premios</h1>
+        <link rel="stylesheet" href="src/styles/global.css" /></head
+    >
 
-        <!-- Contenido que se mete desde la página interna -->
-        <slot />
+    <body class="min-h-screen bg-gray-100">
+        <header class="bg-blue-700 text-white p-4 font-bold">
+            Lucel Iluminación - Panel Admin 📊
+        </header>
 
-        <footer class="mt-8 text-sm text-gray-500">
+        <main class="p-6 max-w-7xl mx-auto">
+            <slot />
+        </main>
+
+        <footer class="text-center text-gray-500 text-sm p-4">
             Lucel Iluminación © {new Date().getFullYear()}
         </footer>
     </body>

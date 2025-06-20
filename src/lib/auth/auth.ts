@@ -2,9 +2,9 @@ import jwt from "jsonwebtoken"
 
 type TokenPayload = {
     role: string
-    // username?: string
-    // exp?: number
-    // iat?: number
+    username: string
+    exp: number
+    iat: number
 }
 
 /**

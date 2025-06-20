@@ -8,6 +8,19 @@ import "@/styles/global.css";
     <head>
         <title>Login</title>
         <meta charset="UTF-8" />
+        <style>
+            .error-msg {
+                opacity: 1;
+                transition: opacity 0.5s ease-in-out;
+                animation: fadeOut 0.5s ease-in-out 3s forwards;
+            }
+
+            @keyframes fadeOut {
+                to {
+                    opacity: 0;
+                }
+            }
+        </style>
     </head>
     <body
         class="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-black flex items-center justify-center px-4"
@@ -57,14 +70,14 @@ import "@/styles/global.css";
 
                 {
                     formError === "1" && (
-                        <p class="text-sm text-red-400 mt-2 text-center">
+                        <p class="error-msg text-sm text-red-400 mt-2 text-center">
                             ❌ Usuario o contraseña incorrectos
                         </p>
                     )
                 }
                 {
                     formError === "expired" && (
-                        <p class="text-sm text-yellow-400 mt-2 text-center">
+                        <p class="error-msg text-sm text-yellow-400 mt-2 text-center">
                             ⚠️ Sesión expirada, vuelve a iniciar sesión.
                         </p>
                     )
