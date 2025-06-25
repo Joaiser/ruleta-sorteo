@@ -6,33 +6,30 @@ import { ModalPremio } from '@/components/ModalPremio'
 
 type ResultadoSorteo = {
     prize: {
-        type: 'discount' | 'gift' | "product",
+        type: 'discount' | "product",
         value: string | number
     },
     code: string
 }
 
-const premios: Prize[] = [
-    { type: "discount", value: 5 },
-    { type: "discount", value: 10 },
-    { type: "discount", value: 15 },
-    { type: "discount", value: 20 },
-    { type: "discount", value: 50 },
-    { type: "product", value: "Producto Categoria A" },
-    { type: "product", value: "Producto Categoria B" },
-    //hablar con la jefa
-]
-
-
 export function Ruleta() {
-    const [resultado, setResultado] = useState<ResultadoSorteo | null>(null)
-    const [mensaje, setMensaje] = useState<string | null>(null)
-    const [mustSpin, setMustSpin] = useState(false)
-    const [prizeIndex, setPrizeIndex] = useState<number | null>(null)
-    const [tempResultado, setTempResultado] = useState<ResultadoSorteo | null>(null)
-    const [modalAbierto, setModalAbierto] = useState(false)
+    const [premios, setPremios] = useState<Prize[]>([]);
+    const [resultado, setResultado] = useState<ResultadoSorteo | null>(null);
+    const [mensaje, setMensaje] = useState<string | null>(null);
+    const [mustSpin, setMustSpin] = useState(false);
+    const [prizeIndex, setPrizeIndex] = useState<number | null>(null);
+    const [tempResultado, setTempResultado] = useState<ResultadoSorteo | null>(null);
+    const [modalAbierto, setModalAbierto] = useState(false);
 
+    // 🔁 Cargar premios al inicio
+    useEffect(() => {
+        fetch('/api/prizes')
+            .then((res) => res.json())
+            .then((data) => setPremios(data))
+            .catch((err) => console.error('❌ Error al cargar premios', err));
+    }, []);
 
+    // 🔁 Inicializar sesión
     useEffect(() => {
         fetch('/api/session', {
             method: 'GET',
@@ -80,6 +77,7 @@ export function Ruleta() {
             return;
         }
 
+
         setTempResultado(data)
 
         // Buscar índice del premio dentro del array de premios
@@ -106,34 +104,36 @@ export function Ruleta() {
     }
 
     return (
-        <div className='p-4 flex flex-col items-center justify-center'>
-            <div className='flex justify-center content-center'>
+        <div className="p-4 flex flex-col items-center justify-center">
+            <div className="flex justify-center content-center">
                 <button
                     onClick={handleSpin}
-                    className='bg-blue-600 text-white px-4 py-2 rounded w-32 cursor-pointer'>
+                    className="bg-blue-600 text-white px-4 py-2 rounded w-32 cursor-pointer"
+                >
                     Girar Ruleta!
                 </button>
             </div>
 
             {mensaje && (
-                <div className='mt-6 text-center'>
-                    <div className='inline-block bg-yellow-100 text-yellow-900 border border-yellow-300 px-4 py-2 rounded shadow'>
+                <div className="mt-6 text-center">
+                    <div className="inline-block bg-yellow-100 text-yellow-900 border border-yellow-300 px-4 py-2 rounded shadow">
                         {mensaje}
                     </div>
                 </div>
             )}
 
-            <SpinRoulette
-                prizes={premios}
-                onSpinComplete={onSpinComplete}
-                mustSpin={mustSpin}
-                prizeIndex={prizeIndex}
-            />
+            {premios.length > 0 && (
+                <SpinRoulette
+                    prizes={premios}
+                    onSpinComplete={onSpinComplete}
+                    mustSpin={mustSpin}
+                    prizeIndex={prizeIndex}
+                />
+            )}
 
             {resultado && modalAbierto && (
                 <ModalPremio resultado={resultado} onClose={() => setModalAbierto(false)} />
             )}
         </div>
-    )
-
+    );
 }
