@@ -10,7 +10,7 @@ export function PrizeList() {
 
     useEffect(() => {
         const fetchPrizes = async () => {
-            const res = await fetch("/api/prizes");
+            const res = await fetch("/api/prize");
             if (res.ok) {
                 const data = await res.json();
                 setPrizes(data);

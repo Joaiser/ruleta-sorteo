@@ -23,13 +23,22 @@ export function Ruleta() {
 
     // 🔁 Cargar premios al inicio
     useEffect(() => {
-        fetch('/api/prizes')
-            .then((res) => res.json())
-            .then((data) => setPremios(data))
-            .catch((err) => console.error('❌ Error al cargar premios', err));
+        fetch('/api/prize', { credentials: 'include' })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`Error ${res.status} al cargar premios`);
+                }
+                return res.json();
+            })
+            .then(data => {
+                console.log('Premios cargados:', data);
+                setPremios(data);
+            })
+            .catch(err => console.error('❌ Error al cargar premios', err));
     }, []);
 
-    // 🔁 Inicializar sesión
+
+    //🔁 Inicializar sesión
     useEffect(() => {
         fetch('/api/session', {
             method: 'GET',
@@ -72,8 +81,8 @@ export function Ruleta() {
         const data: ResultadoSorteo = await lanzarSorteo()
 
         // Si el mensaje viene desde lanzarSorteo, quiere decir que ya participó
-        if (mensaje) {
-            setResultado(data); // Seteamos el resultado igualmente, pero no giramos
+        if (data && data.prize && data.code && mensaje) {
+            setResultado(data);
             return;
         }
 
@@ -82,8 +91,9 @@ export function Ruleta() {
 
         // Buscar índice del premio dentro del array de premios
         const index = premios.findIndex(
-            p => p.type === data.prize.type && p.value === data.prize.value
-        )
+            p => p.type === data.prize.type && String(p.value) === String(data.prize.value)
+        );
+
 
         if (index === -1) {
             // console.error("Premio no encontrado en premios")

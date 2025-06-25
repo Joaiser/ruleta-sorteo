@@ -1,9 +1,6 @@
 import { connectToDatabase } from "@/lib/db";
-import { verifyAdminRequest } from "@/utils/verifyAdminRequest";
 
 export const GET = async ({ request }: { request: Request }) => {
-    const errorResponse = await verifyAdminRequest(request);
-    if (errorResponse) return errorResponse;
 
     try {
         const db = await connectToDatabase();
