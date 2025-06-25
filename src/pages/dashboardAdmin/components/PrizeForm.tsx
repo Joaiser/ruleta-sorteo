@@ -21,13 +21,6 @@ export function PrizeForm({ onAdd }: { onAdd: (prize: Prize) => void }) {
         }))
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        onAdd(form);
-        setStep(1)
-        setForm({ type: 'discount', value: '', code: '', baseChance: 1 })
-    }
-
     const generateCode = () => {
         const random = crypto.randomUUID().slice(0, 8).toUpperCase();
         setForm((prev) => ({ ...prev, code: random }));
@@ -38,6 +31,26 @@ export function PrizeForm({ onAdd }: { onAdd: (prize: Prize) => void }) {
         console.log("STEP:", step, "FORM:", form)
     }, [step, form])
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const res = await fetch("/api/add-prizes", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(form)
+        });
+
+        if (res.ok) {
+            const data = await res.json()
+            console.log("Premio añadido:", data);
+            onAdd(data);
+            setStep(1)
+            setForm({ type: 'discount', value: '', code: '', baseChance: 1 });
+        } else {
+            const error = await res.json()
+            alert("Error al añadir el premio: " + error.message);
+        }
+    }
 
     return (
         <form onSubmit={handleSubmit} className="bg-gray-900 text-white p-6 rounded shadow space-y-6 max-w-xl mx-auto">
