@@ -4,6 +4,7 @@
    - Crear nueva ruta `/admin` o `/dashboard`.
    - Middleware/API handler que permita el acceso solo a ciertas personas (usuarios validados por UUID, JWT o IP temporal).
    - Interfaz sencilla para listar participantes y premios entregados.
+   OK✅
 
 2. 🎁 Limitar premios únicos:
    - Que solo puedan tocarse 2 premios tipo "product" (ej. 2 ventiladores).
@@ -27,7 +28,8 @@
    - Limpiar archivos y carpetas innecesarias del template de Astro.
 
 
-7. Arreglar el tema de coger la IP y ver como podemos hacerlo bien.
+7. Arreglar el tema de coger la IP y ver como podemos hacerlo bien.¿?¿
+No necesario
 
 8. Podemos hacer rollo como en el concursillo, para que cuando empiezas hasta que acabes te guie, como una voz, así queda más guay.
 
@@ -44,3 +46,8 @@
 LO REAL ES QUE HAY CONECTAR A LA BD, LAS NUEVAS RUTAS 
 DE PRICE Y GESTIONAR BIEN, EL TEMA DE PORCENTAJES ESCALABLES POR EL QUIZ, ADEMÁS, 
 DE QUE AUN FALTA POR HACER, EL QUIZ Y TAL, NO REPETIR PREGUNTAS
+
+
+
+TENEMOS QUE VER, ahora que tenemos login con google que hacemos con el UUID que se generá al inciar sesión, ya no hace falta
+Además, de ver que se guarda en la bd, cuando se inicia sesión.

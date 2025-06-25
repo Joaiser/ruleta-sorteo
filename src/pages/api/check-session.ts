@@ -1,4 +1,5 @@
 import { isAdminToken } from "@/lib/auth/auth"
+import jwt from "jsonwebtoken";
 
 export async function GET({ request }: { request: Request }) {
     const cookieHeader = request.headers.get('cookie') || '';
@@ -23,5 +24,22 @@ export async function GET({ request }: { request: Request }) {
         status: 200,
         headers: { "Content-Type": "application/json" },
     })
+}
+
+export function getSessionFromRequest(request: Request): { email: string } | null {
+    try {
+        const cookieHeader = request.headers.get("cookie") || "";
+        const cookies = Object.fromEntries(cookieHeader.split("; ").map(c => c.split("=")));
+
+        const token = cookies.session;
+        if (!token) return null;
+
+        const payload = jwt.verify(token, import.meta.env.JWT_SECRET!) as any;
+
+        return { email: payload.email };
+    } catch (err) {
+        console.error("❌ Sesión inválida:", err);
+        return null;
+    }
 }
 
