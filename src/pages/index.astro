@@ -5,7 +5,6 @@ import { Ruleta } from "@/components/ruleta/ruleta";
 import { LoginGoogleButton } from "@/pages/dashboardAdmin/components/LoginGoogleButton";
 import { getSessionFromRequest } from "@/pages/api/check-session";
 import { LoginFacebookButton } from "@/pages/dashboardAdmin/components/LoginFacebookButton";
-import Login from "./dashboardAdmin/login.astro";
 
 const session = getSessionFromRequest(Astro.request);
 const isLoggedIn = session !== null;

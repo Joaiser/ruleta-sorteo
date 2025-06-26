@@ -51,3 +51,6 @@ DE QUE AUN FALTA POR HACER, EL QUIZ Y TAL, NO REPETIR PREGUNTAS
 
 TENEMOS QUE VER, ahora que tenemos login con google que hacemos con el UUID que se generá al inciar sesión, ya no hace falta
 Además, de ver que se guarda en la bd, cuando se inicia sesión.
+
+
+SI SE USA LO DE FACEBOOK PARA INCIAR SESIÓN TENEMOS QUE CREAR EL ENDPOINT PARA VERIFICAR Y REDIRIGIR
