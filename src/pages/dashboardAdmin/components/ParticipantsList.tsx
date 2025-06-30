@@ -17,14 +17,19 @@ export default function ParticipantsList() {
     const [search, setSearch] = useState('');
     const [filtered, setFiltered] = useState<participants[]>([]);
     const [removing, setRemoving] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
 
     useEffect(() => {
         fetch('/api/get-participants', { credentials: 'include' })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error("No se pudieron cargar los participantes.");
+                return res.json();
+            })
             .then((data) => {
                 const formateados = data.map((p: any) => ({
                     _id: p._id,
-                    username: p.email || '-', // en el futuro puedes mapear nombre real
+                    username: p.email || '-',
                     prize: {
                         type: p.prize.type,
                         value: p.prize.value,
@@ -37,9 +42,10 @@ export default function ParticipantsList() {
                 setFiltered(formateados);
             })
             .catch(err => {
-                console.error("Error cargando participantes:", err);
+                setErrorMessage(err.message || "Error desconocido al cargar los participantes.");
             });
     }, []);
+
 
 
     useEffect(() => {
@@ -53,22 +59,52 @@ export default function ParticipantsList() {
         setFiltered(filteredData);
     }, [search, participants]);
 
-    const markAsUsed = (id: string) => {
-        setParticipants((prev) =>
-            prev.map((p) => (p._id === id ? { ...p, status: 'used' } : p))
-        );
+    const markAsUsed = async (id: string) => {
+        try {
+            const res = await fetch("/api/update-status", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, status: "used" }),
+            });
+            if (!res.ok) throw new Error("No se pudo marcar como usado.");
+            setParticipants((prev) =>
+                prev.map((p) => (p._id === id ? { ...p, status: "used" } : p))
+            );
+        } catch (err) {
+            setErrorMessage(err instanceof Error ? err.message : "Error desconocido al marcar.");
+        }
     };
 
-    const deleteParticipant = (id: string) => {
+
+    const deleteParticipant = async (id: string) => {
         setRemoving(id);
-        setTimeout(() => {
-            setParticipants((prev) => prev.filter((p) => p._id !== id));
+        try {
+            const res = await fetch("/api/update-status", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, status: "cancelled" }),
+            });
+            if (!res.ok) throw new Error("No se pudo cancelar al participante.");
+            setParticipants((prev) =>
+                prev.map((p) => (p._id === id ? { ...p, status: "cancelled" } : p))
+            );
+        } catch (err) {
+            setErrorMessage(err instanceof Error ? err.message : "Error desconocido al cancelar.");
+        } finally {
             setRemoving(null);
-        }, 300); // tiempo que dura la animación
+        }
     };
+
+
 
     return (
         <div className="space-y-6">
+            {errorMessage && (
+                <div className="bg-red-700/90 border border-red-500 text-white px-4 py-2 rounded-lg shadow mb-4">
+                    ⚠️ {errorMessage}
+                </div>
+            )}
+
             <input
                 type="search"
                 placeholder="🔎 Buscar por UUID, nombre o código..."
@@ -89,8 +125,11 @@ export default function ParticipantsList() {
                             <p className="text-sm"><span className="font-semibold">🎁 Código:</span> {p.prize.code}</p>
                             <p className="text-sm">
                                 <span className="font-semibold">📌 Estado:</span>
-                                <span className={`ml-1 px-2 py-0.5 rounded text-xs font-medium
-                                    ${p.status === 'used' ? 'bg-red-600/80 text-white' : 'bg-green-600/80 text-white'}`}>
+                                <span
+                                    className={`ml-1 px-2 py-0.5 rounded text-xs font-medium
+		                                    ${p.status === 'used' ? 'bg-red-600/80 text-white' :
+                                            p.status === 'cancelled' ? 'bg-gray-600/80 text-white' :
+                                                'bg-green-600/80 text-white'}`}>
                                     {p.status}
                                 </span>
                             </p>
