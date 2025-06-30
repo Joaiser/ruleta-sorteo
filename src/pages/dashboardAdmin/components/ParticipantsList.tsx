@@ -2,14 +2,12 @@ import { useState, useEffect } from 'react';
 
 type participants = {
     _id: string;
-    uuid: string;
     username?: string;
     prize: {
         type: string;
         value: number;
         code: string;
         date: string;
-        ip: string;
     };
     status: 'active' | 'used' | 'cancelled';
 };
@@ -21,31 +19,33 @@ export default function ParticipantsList() {
     const [removing, setRemoving] = useState<string | null>(null);
 
     useEffect(() => {
-        const data: participants[] = [
-            {
-                _id: '1',
-                uuid: 'abc-123',
-                username: 'maria',
-                prize: { type: 'discount', value: 10, code: 'C70BBFD1', date: '2025-06-19', ip: 'unknow' },
-                status: 'active',
-            },
-            {
-                _id: '2',
-                uuid: 'def-456',
-                username: 'ana',
-                prize: { type: 'discount', value: 15, code: 'D80CCDD2', date: '2025-06-18', ip: 'unknow' },
-                status: 'used',
-            },
-        ];
-        setParticipants(data);
-        setFiltered(data);
+        fetch('/api/get-participants', { credentials: 'include' })
+            .then(res => res.json())
+            .then((data) => {
+                const formateados = data.map((p: any) => ({
+                    _id: p._id,
+                    username: p.email || '-', // en el futuro puedes mapear nombre real
+                    prize: {
+                        type: p.prize.type,
+                        value: p.prize.value,
+                        code: p.code,
+                        date: new Date(p.date).toLocaleDateString(),
+                    },
+                    status: p.status || 'active'
+                }));
+                setParticipants(formateados);
+                setFiltered(formateados);
+            })
+            .catch(err => {
+                console.error("Error cargando participantes:", err);
+            });
     }, []);
+
 
     useEffect(() => {
         const filteredData = participants.filter((p) => {
             const term = search.toLowerCase();
             return (
-                p.uuid.toLowerCase().includes(term) ||
                 (p.username && p.username.toLowerCase().includes(term)) ||
                 p.prize.code.toLowerCase().includes(term)
             );
@@ -85,7 +85,6 @@ export default function ParticipantsList() {
                         ${removing === p._id ? 'opacity-0 scale-95 pointer-events-none' : 'hover:shadow-xl hover:scale-[1.01]'}`}
                     >
                         <div className="mb-4 sm:mb-0 space-y-1">
-                            <p className="text-sm"><span className="font-semibold">🆔 UUID:</span> {p.uuid}</p>
                             <p className="text-sm"><span className="font-semibold">👤 Usuario:</span> {p.username || '-'}</p>
                             <p className="text-sm"><span className="font-semibold">🎁 Código:</span> {p.prize.code}</p>
                             <p className="text-sm">

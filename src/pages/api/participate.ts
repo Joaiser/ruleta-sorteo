@@ -94,10 +94,12 @@ export const POST: APIRoute = async ({ request }) => {
     const code = crypto.randomUUID().slice(0, 8).toUpperCase();
 
     await collection.insertOne({
-        user: identifier,
+        user: identifier,              // fb_1234 o email
+        email: identifier.includes('@') ? identifier : null, // solo si es Google
         prize: { type, value },
         code,
-        date: new Date()
+        date: new Date(),
+        status: "active"
     });
 
     return new Response(
