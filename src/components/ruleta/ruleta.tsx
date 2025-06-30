@@ -38,71 +38,71 @@ export function Ruleta() {
     }, []);
 
 
-    //🔁 Inicializar sesión
-    useEffect(() => {
-        fetch('/api/session', {
-            method: 'GET',
-            credentials: 'include',
-        })
-            .then(res => {
-                if (!res.ok) throw new Error("Nos se pudo inicializar sesión")
-                return res.json()
-            })
-            .then(data => console.log("sesión iniciada con UUID:", data.uuid))
-            .catch(err => console.error("Error iniciando sesion", err))
-    }, [])
-
     async function lanzarSorteo() {
-        const res = await fetch('/api/participate', {
-            method: 'POST',
-            credentials: 'include'
-        })
+        try {
+            const res = await fetch('/api/participate', {
+                method: 'POST',
+                credentials: 'include'
+            });
 
-        const data = await res.json()
+            const data = await res.json();
 
-        if (!res.ok) {
-            if (data?.prize && data?.code) {
-                setMensaje("Ya has participado en el sorteo. Este fue tu premio:")
-                return data // aunque haya error, ya participó y tenemos datos
+            if (!res.ok) {
+                if (data?.prize && data?.code) {
+                    setMensaje("Ya has participado en el sorteo. Este fue tu premio:");
+                    return data;
+                }
+
+                if (data?.error === "Token inválido o expirado" || data?.error === "Sesión no encontrada") {
+                    setMensaje("Tu sesión ha expirado. Inicia sesión de nuevo.");
+                    return null;
+                }
+
+                setMensaje(data?.error || "Error desconocido al participar.");
+                return null;
             }
-            throw new Error("Error en la participación")
+
+            setMensaje(null);
+            return data;
+
+        } catch (err) {
+            console.error("❌ Error de red o inesperado:", err);
+            setMensaje("Error al conectar con el servidor. Intenta más tarde.");
+            return null;
         }
-        setMensaje(null)
-        return data
     }
 
-    async function handleSpin() {
 
+    async function handleSpin() {
         if (resultado) {
             setMensaje("Ya has participado y no puedes girar de nuevo.");
             return;
         }
 
-        const data: ResultadoSorteo = await lanzarSorteo()
+        const data = await lanzarSorteo();
 
-        // Si el mensaje viene desde lanzarSorteo, quiere decir que ya participó
+        if (!data) return; // Si hubo error, no hacer nada
+
         if (data && data.prize && data.code && mensaje) {
             setResultado(data);
             return;
         }
 
+        setTempResultado(data);
 
-        setTempResultado(data)
-
-        // Buscar índice del premio dentro del array de premios
         const index = premios.findIndex(
             p => p.type === data.prize.type && String(p.value) === String(data.prize.value)
         );
 
-
         if (index === -1) {
-            // console.error("Premio no encontrado en premios")
-            return
+            setMensaje("Premio obtenido no coincide con los configurados.");
+            return;
         }
 
-        setPrizeIndex(index)   // Actualiza índice del premio
-        setMustSpin(true)      // Indica que debe empezar a girar la ruleta
+        setPrizeIndex(index);
+        setMustSpin(true);
     }
+
 
     // Aquí actualizamos resultado real cuando la ruleta termina el giro
     function onSpinComplete(prize: Prize) {
