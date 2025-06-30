@@ -1,10 +1,10 @@
 ---
 import Nav from "../components/Nav/Nav.astro";
 import Layout from "../layouts/Layout.astro";
-import { Ruleta } from "@/components/ruleta/ruleta";
 import { LoginGoogleButton } from "@/pages/dashboardAdmin/components/LoginGoogleButton";
-import { getSessionFromRequest } from "@/pages/api/check-session";
 import { LoginFacebookButton } from "@/pages/dashboardAdmin/components/LoginFacebookButton";
+import { getSessionFromRequest } from "@/pages/api/check-session";
+import { GameSelector } from "@/components/games/GamesSelector";
 
 const session = getSessionFromRequest(Astro.request);
 const isLoggedIn = session !== null;
@@ -14,7 +14,7 @@ const isLoggedIn = session !== null;
 	<Nav />
 	{
 		isLoggedIn ? (
-			<Ruleta client:only="react" />
+			<GameSelector client:only="react" />
 		) : (
 			<div class="flex items-center justify-center gap-2.5">
 				<LoginGoogleButton client:only="react" />
