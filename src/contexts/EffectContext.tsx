@@ -4,6 +4,8 @@ type EffectContextType = {
     playVictorySound: () => void;
     playScratchSound: () => void;
     stopScratchSound: () => void;
+    playSpinSound: () => void;
+    stopSpinSound: () => void;
 };
 
 const EffectContext = createContext<EffectContextType | undefined>(undefined);
@@ -11,13 +13,17 @@ const EffectContext = createContext<EffectContextType | undefined>(undefined);
 export function EffectProvider({ children }: { children: React.ReactNode }) {
     const victoryAudio = useRef<HTMLAudioElement | null>(null);
     const scratchAudio = useRef<HTMLAudioElement | null>(null);
+    const spinAudio = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             victoryAudio.current = new Audio("/sounds/winfantasia.mp3");
             scratchAudio.current = new Audio("/sounds/scratch-sound.mp3");
+            spinAudio.current = new Audio("/sounds/roulette_casino.mp3");
             scratchAudio.current.loop = true;
             scratchAudio.current.volume = 0.5;
+            spinAudio.current.loop = true;
+            spinAudio.current.volume = 0.5;
         }
     }, []);
 
@@ -44,8 +50,21 @@ export function EffectProvider({ children }: { children: React.ReactNode }) {
         }
     }, []);
 
+    const playSpinSound = useCallback(() => {
+        if (spinAudio.current) {
+            spinAudio.current.play().catch(() => { });
+        }
+    }, []);
+
+    const stopSpinSound = useCallback(() => {
+        if (spinAudio.current) {
+            spinAudio.current.pause();
+            spinAudio.current.currentTime = 0;
+        }
+    }, []);
+
     return (
-        <EffectContext.Provider value={{ playVictorySound, playScratchSound, stopScratchSound }}>
+        <EffectContext.Provider value={{ playVictorySound, playScratchSound, stopScratchSound, playSpinSound, stopSpinSound }}>
             {children}
         </EffectContext.Provider>
     );

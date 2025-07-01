@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SpinRoulette } from './SpinRoulette';
 import type { Prize } from '@/components/ruleta/SpinRoulette'
 import { ModalPremio } from '@/components/ModalPremio'
-
+import { useEffects } from '@/contexts/EffectContext';
 
 type ResultadoSorteo = {
     prize: {
@@ -21,6 +21,8 @@ export function Ruleta() {
     const [tempResultado, setTempResultado] = useState<ResultadoSorteo | null>(null);
     const [modalAbierto, setModalAbierto] = useState(false);
 
+
+    const { playSpinSound, stopSpinSound, playVictorySound } = useEffects();
     // 🔁 Cargar premios al inicio
     useEffect(() => {
         fetch('/api/prize', { credentials: 'include' })
@@ -101,15 +103,18 @@ export function Ruleta() {
 
         setPrizeIndex(index);
         setMustSpin(true);
+        playSpinSound();
     }
 
 
     // Aquí actualizamos resultado real cuando la ruleta termina el giro
     function onSpinComplete(prize: Prize) {
         setMustSpin(false)
+        stopSpinSound();
         if (tempResultado) {
             setResultado(tempResultado)
             setModalAbierto(true)
+            playVictorySound();
         }
     }
 
