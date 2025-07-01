@@ -1,0 +1,11 @@
+---
+import AdminLayout from "@/layouts/AdminLayout.astro";
+import { QuizQuestionList } from "@/pages/dashboardAdmin/components/admin/QuizQuestionList";
+import { AddQuestionForm } from "@/pages/dashboardAdmin/components/admin/AddQuestionForm";
+---
+
+<AdminLayout>
+    <h1 class="text-3xl font-bold mb-4">Preguntas del Quiz</h1>
+    <AddQuestionForm client:load />
+    <QuizQuestionList client:load />
+</AdminLayout>
