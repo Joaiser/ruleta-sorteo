@@ -39,7 +39,7 @@ function Modal({
             onClick={handleClose}
             aria-modal="true"
             role="dialog"
-            className={`fixed inset-0 flex justify-center items-center z-50 p-4 transition-colors duration-300 ${open ? "bg-gray-200/30 pointer-events-auto" : "bg-transparent pointer-events-none"
+            className={`fixed inset-0 flex justify-center items-center z-50 p-4 transition-colors duration-300 ${open ? "bg-gray-200/30 pointer-events-auto overflow-hidden" : "bg-transparent pointer-events-none overflow-hidden"
                 }`}
         >
             <div
@@ -67,7 +67,7 @@ function Modal({
                     ✕
                 </button>
 
-                <div className="flex-1 min-h-[400px] overflow-y-auto mt-10">{showContent && children}</div>
+                <div className="flex-1 min-h-[400px] overflow-hidden mt-10">{showContent && children}</div>
             </div>
         </div>
     );

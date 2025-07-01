@@ -114,6 +114,12 @@ export function ScratchCard() {
         setModalAbierto(true);
         scratchAudioRef.current?.pause(); // detener audio si estaba sonando
         scratchAudioRef.current!.currentTime = 0; // reiniciar audio
+
+        const audio = new Audio("/sounds/winfantasia.mp3");
+        audio.play().catch(err => {
+            console.warn("🎵 Error al reproducir victoria:", err);
+            // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario
+        });
     }
 
     // 6. Eventos pointer para rascar
