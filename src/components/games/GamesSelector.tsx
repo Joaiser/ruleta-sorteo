@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Ruleta } from "@/components/ruleta/ruleta";
 import { ScratchCard } from "@/components/scratchCard/ScratchCard";
+import { EffectProvider } from "@/contexts/EffectContext";
 
 function Modal({
     children,
@@ -107,38 +108,41 @@ export function GameSelector() {
     }
 
     return (
-        <div className="flex flex-col items-center gap-8 mt-10">
-            <h2 className="text-2xl font-bold mb-6">Elige tu juego</h2>
+        <EffectProvider>
 
-            <div className="flex gap-5">
-                {["ruleta", "scratch"].map((game) => {
-                    const isRuleta = game === "ruleta";
-                    const id = `btn-${game}`;
-                    return (
-                        <button
-                            key={game}
-                            onClick={() => openGame(game as "ruleta" | "scratch")}
-                            style={{
-                                viewTransitionName: id,
-                                backgroundColor: isRuleta ? "#2563EB" : "#16A34A",
-                            }}
-                            onMouseEnter={(e) =>
-                                (e.currentTarget.style.backgroundColor = isRuleta ? "#1D4ED8" : "#15803D")
-                            }
-                            onMouseLeave={(e) =>
-                                (e.currentTarget.style.backgroundColor = isRuleta ? "#2563EB" : "#16A34A")
-                            }
-                            className="px-8 py-4 rounded-xl border-0 cursor-pointer text-white text-lg font-semibold select-none transition-colors duration-200"
-                        >
-                            {isRuleta ? "Ruleta" : "Rasca y Gana"}
-                        </button>
-                    );
-                })}
+            <div className="flex flex-col items-center gap-8 mt-10">
+                <h2 className="text-2xl font-bold mb-6">Elige tu juego</h2>
+
+                <div className="flex gap-5">
+                    {["ruleta", "scratch"].map((game) => {
+                        const isRuleta = game === "ruleta";
+                        const id = `btn-${game}`;
+                        return (
+                            <button
+                                key={game}
+                                onClick={() => openGame(game as "ruleta" | "scratch")}
+                                style={{
+                                    viewTransitionName: id,
+                                    backgroundColor: isRuleta ? "#2563EB" : "#16A34A",
+                                }}
+                                onMouseEnter={(e) =>
+                                    (e.currentTarget.style.backgroundColor = isRuleta ? "#1D4ED8" : "#15803D")
+                                }
+                                onMouseLeave={(e) =>
+                                    (e.currentTarget.style.backgroundColor = isRuleta ? "#2563EB" : "#16A34A")
+                                }
+                                className="px-8 py-4 rounded-xl border-0 cursor-pointer text-white text-lg font-semibold select-none transition-colors duration-200"
+                            >
+                                {isRuleta ? "Ruleta" : "Rasca y Gana"}
+                            </button>
+                        );
+                    })}
+                </div>
+
+                <Modal onClose={closeModal} viewTransitionId={transitionIdRef.current} open={modalOpen}>
+                    {selectedGame === "ruleta" ? <Ruleta /> : <ScratchCard />}
+                </Modal>
             </div>
-
-            <Modal onClose={closeModal} viewTransitionId={transitionIdRef.current} open={modalOpen}>
-                {selectedGame === "ruleta" ? <Ruleta /> : <ScratchCard />}
-            </Modal>
-        </div>
+        </EffectProvider>
     );
 }

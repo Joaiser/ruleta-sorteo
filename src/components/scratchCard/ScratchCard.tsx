@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ModalPremio } from "@/components/ModalPremio";
+import { useEffects } from "@/contexts/EffectContext";
 
 type ResultadoSorteo = {
     prize: {
@@ -16,8 +17,8 @@ export function ScratchCard() {
     const [rascado, setRascado] = useState(false);
     const [resultado, setResultado] = useState<ResultadoSorteo | null>(null);
     const [mensaje, setMensaje] = useState<string | null>(null);
+    const { playVictorySound, playScratchSound, stopScratchSound } = useEffects();
 
-    const scratchAudioRef = useRef<HTMLAudioElement | null>(null);
     const threshold = 50; // % para abrir modal
 
     // 1. Cargar premio al montar para tenerlo debajo del canvas
@@ -38,7 +39,7 @@ export function ScratchCard() {
                     setMensaje("Ya has participado. Este fue tu premio:");
                     setResultado(data);
                     // NO abrir modal aquí tampoco
-                    // Lo abrirás sólo cuando rasquen > 70%
+                    // Lo abrirás sólo cuando rasquen > 50%
                     setRascado(true); // para evitar rascar otra vez
                 }
             } catch (error) {
@@ -48,13 +49,6 @@ export function ScratchCard() {
         obtenerPremioInicial();
     }, []);
 
-    //Iniciar audio de rascar
-    useEffect(() => {
-        const audio = new Audio("/sounds/scratch-sound.mp3")
-        audio.loop = true;
-        audio.volume = 0.5;
-        scratchAudioRef.current = audio
-    }, []);
 
 
     // 2. Inicializar canvas con capa gris y texto "¡Rasca aquí!"
@@ -112,14 +106,7 @@ export function ScratchCard() {
     function handleRascarSuficiente() {
         setRascado(true);
         setModalAbierto(true);
-        scratchAudioRef.current?.pause(); // detener audio si estaba sonando
-        scratchAudioRef.current!.currentTime = 0; // reiniciar audio
-
-        const audio = new Audio("/sounds/winfantasia.mp3");
-        audio.play().catch(err => {
-            console.warn("🎵 Error al reproducir victoria:", err);
-            // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario
-        });
+        playVictorySound();
     }
 
     // 6. Eventos pointer para rascar
@@ -128,7 +115,7 @@ export function ScratchCard() {
         if (rascado) return; // ya raspado, no permitir más
 
         setIsDrawing(true);
-        scratchAudioRef.current?.play().catch(() => { }) // reproducir sonido al iniciar rascar
+        playScratchSound();
 
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -154,8 +141,7 @@ export function ScratchCard() {
     function handlePointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
         e.preventDefault();
         setIsDrawing(false);
-        scratchAudioRef.current?.pause(); // detener audio al dejar de rascar
-        scratchAudioRef.current!.currentTime = 0; // reiniciar audio
+        stopScratchSound();
     }
 
     return (
