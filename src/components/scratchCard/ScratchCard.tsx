@@ -17,6 +17,7 @@ export function ScratchCard() {
     const [resultado, setResultado] = useState<ResultadoSorteo | null>(null);
     const [mensaje, setMensaje] = useState<string | null>(null);
 
+    const scratchAudioRef = useRef<HTMLAudioElement | null>(null);
     const threshold = 50; // % para abrir modal
 
     // 1. Cargar premio al montar para tenerlo debajo del canvas
@@ -45,6 +46,14 @@ export function ScratchCard() {
             }
         }
         obtenerPremioInicial();
+    }, []);
+
+    //Iniciar audio de rascar
+    useEffect(() => {
+        const audio = new Audio("/sounds/scratch-sound.mp3")
+        audio.loop = true;
+        audio.volume = 0.5;
+        scratchAudioRef.current = audio
     }, []);
 
 
@@ -103,6 +112,8 @@ export function ScratchCard() {
     function handleRascarSuficiente() {
         setRascado(true);
         setModalAbierto(true);
+        scratchAudioRef.current?.pause(); // detener audio si estaba sonando
+        scratchAudioRef.current!.currentTime = 0; // reiniciar audio
     }
 
     // 6. Eventos pointer para rascar
@@ -111,6 +122,8 @@ export function ScratchCard() {
         if (rascado) return; // ya raspado, no permitir más
 
         setIsDrawing(true);
+        scratchAudioRef.current?.play().catch(() => { }) // reproducir sonido al iniciar rascar
+
         const rect = e.currentTarget.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
@@ -135,6 +148,8 @@ export function ScratchCard() {
     function handlePointerUp(e: React.PointerEvent<HTMLCanvasElement>) {
         e.preventDefault();
         setIsDrawing(false);
+        scratchAudioRef.current?.pause(); // detener audio al dejar de rascar
+        scratchAudioRef.current!.currentTime = 0; // reiniciar audio
     }
 
     return (
