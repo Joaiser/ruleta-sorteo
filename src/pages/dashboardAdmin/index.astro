@@ -1,7 +1,7 @@
 ---
 import AdminLayout from "@/layouts/AdminLayout.astro";
 import { isAdminToken } from "@/lib/auth/auth";
-import ParticipantsList from "@/pages/dashboardAdmin/components/admin/ParticipantsList";
+import ParticipantsList from "@/components/dashboardComponents/admin/ParticipantsList";
 
 const token = Astro.cookies.get("admin_token")?.value;
 

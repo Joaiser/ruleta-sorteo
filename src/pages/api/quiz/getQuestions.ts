@@ -10,7 +10,7 @@ export const GET: APIRoute = async () => {
         const questions = await db.collection("questions")
             .find({})
             .sort({ order: 1 })
-            .project({ "answers.isCorrect": 0, "answers.chanceModifiers": 0 }) // quitamos respuestas correctas para que no se vean
+            // .project({ "answers.isCorrect": 0, "answers.chanceModifiers": 0 }) // quitamos respuestas correctas para que no se vean
             .toArray();
 
         return new Response(JSON.stringify(questions), { status: 200 });
