@@ -35,7 +35,7 @@ export function Quiz({ onClose }: { onClose: () => void }) {
     useEffect(() => {
         async function fetchQuestions() {
             try {
-                const res = await fetch(`/api/quiz/getQuestions?phase=${phase}`);
+                const res = await fetch(`/api/quiz/front/getRandomQuestionByPhase?phase=${phase}`);
                 const data: Question[] = await res.json();
                 setQuestions(data);
                 setCurrentIndex(0);
