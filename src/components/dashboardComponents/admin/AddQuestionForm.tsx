@@ -4,8 +4,8 @@ import type { Answer, ChanceModifier, Question } from './QuizQuestionList';
 
 export function AddQuestionForm() {
     const [questionText, setQuestionText] = useState("");
-    const [order, setOrder] = useState(1);
-    const [timeLimitSeconds, setTimeLimitSeconds] = useState(20);
+    const [phase, setPhase] = useState(1);
+    const [timeLimitSeconds, setTimeLimitSeconds] = useState(30);
     const [answers, setAnswers] = useState<Answer[]>([
         { text: "", isCorrect: false, chanceModifiers: [{ chanceDelta: 0 }] },
         { text: "", isCorrect: false, chanceModifiers: [{ chanceDelta: 0 }] },
@@ -80,7 +80,7 @@ export function AddQuestionForm() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    order,
+                    phase,
                     questionText,
                     timeLimitSeconds,
                     answers,
@@ -97,8 +97,8 @@ export function AddQuestionForm() {
                 { text: "", isCorrect: false, chanceModifiers: [{ chanceDelta: 0 }] },
                 { text: "", isCorrect: false, chanceModifiers: [{ chanceDelta: 0 }] },
             ]);
-            setOrder(order + 1);
-            setTimeLimitSeconds(20);
+            setPhase(phase + 1);
+            setTimeLimitSeconds(30);
         } catch (error: any) {
             setErrorMsg(error.message || "Error inesperado");
         } finally {
@@ -109,17 +109,17 @@ export function AddQuestionForm() {
     return (
         <form
             onSubmit={handleSubmit}
-            className=" p-6 bg-gray-900 rounded-xl shadow-lg space-y-6"
+            className=" p-6 bg-gray-900 rounded-xl shadow-lg space-y-6 mb-3"
         >
             <h2 className="text-2xl font-extrabold mb-6 text-white">➕ Añadir Nueva Pregunta</h2>
 
             <label className="block">
-                <span className="text-gray-300 font-semibold mb-1 block">Orden (número):</span>
+                <span className="text-gray-300 font-semibold mb-1 block">Fase:</span>
                 <input
                     type="number"
                     min={1}
-                    value={order}
-                    onChange={(e) => setOrder(Number(e.target.value))}
+                    value={phase}
+                    onChange={(e) => setPhase(Number(e.target.value))}
                     className="w-full rounded-md bg-gray-800 border border-gray-700 px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />

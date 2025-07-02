@@ -7,7 +7,7 @@ const db = client.db(process.env.DB_NAME);
 
 export const POST: APIRoute = async ({ request }) => {
     try {
-        const { username, password, order, questionText, timeLimitSeconds, answers } = await request.json();
+        const { username, password, phase, questionText, timeLimitSeconds, answers } = await request.json();
 
         // Validar admin
         // const admin = await verifiAdmin(username, password);
@@ -17,7 +17,7 @@ export const POST: APIRoute = async ({ request }) => {
 
         //MAS ADELANTE: Descomentar la validación de admin cuando esté implementada
 
-        if (!order || !questionText || !timeLimitSeconds || !answers || !Array.isArray(answers)) {
+        if (!phase || !questionText || !timeLimitSeconds || !answers || !Array.isArray(answers)) {
             return new Response(JSON.stringify({ error: "Datos incompletos" }), { status: 400 });
         }
 
@@ -25,7 +25,7 @@ export const POST: APIRoute = async ({ request }) => {
 
         // Insertar nueva pregunta
         await db.collection("questions").insertOne({
-            order,
+            phase,
             questionText,
             timeLimitSeconds,
             answers,

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Ruleta } from "@/components/ruleta/ruleta";
 import { ScratchCard } from "@/components/scratchCard/ScratchCard";
 import { EffectProvider } from "@/contexts/EffectContext";
+import { Quiz } from "@/components/quizSession/Quiz";
 
 function Modal({
     children,
@@ -56,9 +57,8 @@ function Modal({
                     transition:
                         "width 300ms ease, min-height 300ms ease, opacity 300ms ease, transform 300ms ease",
                 }}
-                data-view-transition-name={viewTransitionId} // Aquí está el cambio
+                data-view-transition-name={viewTransitionId}
             >
-
                 <button
                     onClick={handleClose}
                     aria-label="Cerrar"
@@ -76,11 +76,10 @@ function Modal({
 
 export function GameSelector() {
     const [modalOpen, setModalOpen] = useState(false);
-    const [selectedGame, setSelectedGame] = useState<"ruleta" | "scratch" | null>(null);
-
+    const [selectedGame, setSelectedGame] = useState<"ruleta" | "scratch" | "quiz" | null>(null);
     const transitionIdRef = useRef<string>("");
 
-    function openGame(game: "ruleta" | "scratch") {
+    function openGame(game: "ruleta" | "scratch" | "quiz") {
         const id = `btn-${game}`;
         transitionIdRef.current = id;
 
@@ -109,38 +108,68 @@ export function GameSelector() {
 
     return (
         <EffectProvider>
-
             <div className="flex flex-col items-center gap-8 mt-10">
                 <h2 className="text-2xl font-bold mb-6">Elige tu juego</h2>
 
                 <div className="flex gap-5">
-                    {["ruleta", "scratch"].map((game) => {
+                    {["ruleta", "scratch", "quiz"].map((game) => {
                         const isRuleta = game === "ruleta";
+                        const isScratch = game === "scratch";
+                        const isQuiz = game === "quiz";
                         const id = `btn-${game}`;
+
+                        const getColor = () => {
+                            if (isRuleta) return "#2563EB"; // azul
+                            if (isScratch) return "#16A34A"; // verde
+                            if (isQuiz) return "#9333EA"; // púrpura
+                            return "#6B7280"; // fallback gris
+                        };
+
+                        const getHoverColor = () => {
+                            if (isRuleta) return "#1D4ED8";
+                            if (isScratch) return "#15803D";
+                            if (isQuiz) return "#7E22CE";
+                            return "#4B5563";
+                        };
+
                         return (
                             <button
                                 key={game}
-                                onClick={() => openGame(game as "ruleta" | "scratch")}
+                                onClick={() => openGame(game as "ruleta" | "scratch" | "quiz")}
                                 style={{
                                     viewTransitionName: id,
-                                    backgroundColor: isRuleta ? "#2563EB" : "#16A34A",
+                                    backgroundColor: getColor(),
                                 }}
                                 onMouseEnter={(e) =>
-                                    (e.currentTarget.style.backgroundColor = isRuleta ? "#1D4ED8" : "#15803D")
+                                    (e.currentTarget.style.backgroundColor = getHoverColor())
                                 }
                                 onMouseLeave={(e) =>
-                                    (e.currentTarget.style.backgroundColor = isRuleta ? "#2563EB" : "#16A34A")
+                                    (e.currentTarget.style.backgroundColor = getColor())
                                 }
                                 className="px-8 py-4 rounded-xl border-0 cursor-pointer text-white text-lg font-semibold select-none transition-colors duration-200"
                             >
-                                {isRuleta ? "Ruleta" : "Rasca y Gana"}
+                                {isRuleta
+                                    ? "Ruleta"
+                                    : isScratch
+                                        ? "Rasca y Gana"
+                                        : "Quiz"}
                             </button>
                         );
                     })}
                 </div>
 
-                <Modal onClose={closeModal} viewTransitionId={transitionIdRef.current} open={modalOpen}>
-                    {selectedGame === "ruleta" ? <Ruleta /> : <ScratchCard />}
+                <Modal
+                    onClose={closeModal}
+                    viewTransitionId={transitionIdRef.current}
+                    open={modalOpen}
+                >
+                    {selectedGame === "ruleta" ? (
+                        <Ruleta />
+                    ) : selectedGame === "scratch" ? (
+                        <ScratchCard />
+                    ) : selectedGame === "quiz" ? (
+                        <Quiz onClose={closeModal} />
+                    ) : null}
                 </Modal>
             </div>
         </EffectProvider>
