@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import { MongoClient, ObjectId } from "mongodb";
+import { jwtDecode } from "jwt-decode";
 
 type PersonalizedChance = {
     userId: string;
@@ -14,11 +15,31 @@ type PersonalizedChance = {
 const client = new MongoClient(process.env.MONGODB_URI!);
 const db = client.db(process.env.DB_NAME);
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
     try {
-        const { userId, answers } = await request.json();
+        // 1. Obtener token de la cookie HttpOnly 'session'
+        const token = cookies.get("session")?.value;
+        if (!token) {
+            return new Response(JSON.stringify({ error: "No autorizado, falta token" }), { status: 401 });
+        }
 
-        if (!userId || !Array.isArray(answers)) {
+        // 2. Decodificar token para obtener email (userId)
+        let payload: { email?: string };
+        try {
+            payload = jwtDecode<{ email?: string }>(token);
+        } catch (e) {
+            console.error("Token JWT inválido:", e);
+            return new Response(JSON.stringify({ error: "Token inválido" }), { status: 401 });
+        }
+
+        const userId = payload.email;
+        if (!userId) {
+            return new Response(JSON.stringify({ error: "Token sin email" }), { status: 401 });
+        }
+
+        // 3. Leer el body (solo answers)
+        const { answers } = await request.json();
+        if (!Array.isArray(answers)) {
             return new Response(JSON.stringify({ error: "Faltan datos" }), { status: 400 });
         }
 

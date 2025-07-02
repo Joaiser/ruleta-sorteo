@@ -30,6 +30,7 @@ export function Quiz({ onClose }: { onClose: () => void }) {
     const [initialCountdown, setInitialCountdown] = useState(3);
     const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
     const [answerResult, setAnswerResult] = useState<"correct" | "incorrect" | null>(null);
+    const [userAnswers, setUserAnswers] = useState<{ questionId: string; selectedAnswerIndex: number }[]>([]);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
@@ -88,6 +89,13 @@ export function Quiz({ onClose }: { onClose: () => void }) {
         setSelectedAnswerIndex(index);
         setAnswerResult(selected.isCorrect ? "correct" : "incorrect");
 
+        // Guardar la respuesta actual en el estado
+        const newUserAnswers = [
+            ...userAnswers,
+            { questionId: questions[currentIndex]._id, selectedAnswerIndex: index }
+        ];
+        setUserAnswers(newUserAnswers);
+
         setTimeout(() => {
             if (!selected.isCorrect) {
                 setQuizOver(true);
@@ -103,7 +111,7 @@ export function Quiz({ onClose }: { onClose: () => void }) {
                 if (nextPhase <= 4) {
                     setQuizWon(true);
                     setQuizOver(true);
-                    sendResultsToServer();
+                    sendResultsToServer(newUserAnswers);
                 } else {
                     setPhase(nextPhase);
                 }
@@ -114,13 +122,13 @@ export function Quiz({ onClose }: { onClose: () => void }) {
         }, 1500);
     }
 
-    async function sendResultsToServer() {
+    async function sendResultsToServer(answersToSend: { questionId: string; selectedAnswerIndex: number }[]) {
         try {
             await fetch('/api/quiz/front/submitQuiz', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify({ success: true, phase }),
+                body: JSON.stringify({ answers: answersToSend }),
             });
         } catch (error) {
             console.error("Error sending quiz results:", error);
