@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 export type ChanceModifier = {
-    prizeId: string; // o ObjectId en backend
-    chanceDelta?: number;
-}
+    modifierId: string;
+    prizeId: string;
+    chanceDelta: number;
+};
+
 
 export type Answer = {
     text: string;
