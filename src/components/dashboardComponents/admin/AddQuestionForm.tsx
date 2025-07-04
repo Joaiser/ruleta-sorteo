@@ -20,6 +20,10 @@ export function AddQuestionForm() {
         answerIdx: number;
         modIdx: number;
     } | null>(null);
+    const [lockedModifiers, setLockedModifiers] = useState<
+        { answerIdx: number; modIdx: number }[]
+    >([]);
+
 
     // Añadir respuesta vacía
     const addAnswer = () => {
@@ -171,6 +175,16 @@ export function AddQuestionForm() {
                 return { ...ans, chanceModifiers: newModifiers };
             })
         );
+
+        setLockedModifiers((prev) => {
+            const exists = prev.some(
+                (lock) => lock.answerIdx === answerIdx && lock.modIdx === modIdx
+            );
+            return exists ? prev : [...prev, { answerIdx, modIdx }];
+        });
+
+        setCreatingPrizeFor(null);
+
 
         setCreatingPrizeFor(null);
     };
@@ -327,8 +341,7 @@ export function AddQuestionForm() {
                                                 const newPrizeId = e.target.value;
                                                 if (
                                                     answer.chanceModifiers.some(
-                                                        (m, idx) =>
-                                                            m.prizeId === newPrizeId && idx !== modIdx
+                                                        (m, idx) => m.prizeId === newPrizeId && idx !== modIdx
                                                     )
                                                 ) {
                                                     alert("Ya tienes este premio asignado");
@@ -336,8 +349,13 @@ export function AddQuestionForm() {
                                                 }
                                                 changeModifierPrize(i, modIdx, newPrizeId);
                                             }}
-                                            className="rounded-md bg-gray-700 border border-gray-600 px-3 py-1 text-white"
+                                            disabled={lockedModifiers.some(
+                                                (lock) => lock.answerIdx === i && lock.modIdx === modIdx
+                                            )}
+
+                                            className="rounded-md bg-gray-700 border border-gray-600 px-3 py-1 text-white disabled:opacity-60 disabled:cursor-not-allowed"
                                         >
+
                                             {prizes.map((prize) => (
                                                 <option key={prize._id} value={prize._id}>
                                                     {prize.type === "discount"
