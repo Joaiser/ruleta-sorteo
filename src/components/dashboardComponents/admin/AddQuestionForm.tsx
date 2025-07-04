@@ -157,7 +157,7 @@ export function AddQuestionForm() {
 
         setLoading(true);
         try {
-            const res = await fetch("/api/quiz/addQuestion", {
+            const res = await fetch("/api/quiz/addQuestionFromQuiz", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
