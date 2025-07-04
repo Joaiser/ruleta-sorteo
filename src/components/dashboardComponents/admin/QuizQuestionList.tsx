@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 export type ChanceModifier = {
-    prizeId?: string; // o ObjectId en backend
-    chanceDelta: number;
+    prizeId: string; // o ObjectId en backend
+    chanceDelta?: number;
 }
 
 export type Answer = {

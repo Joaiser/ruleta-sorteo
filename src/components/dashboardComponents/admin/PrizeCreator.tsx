@@ -4,16 +4,31 @@ import type { Prize } from "@/pages/dashboardAdmin/types/prize";
 type PrizeCreatorProps = {
     onCreate: (newPrize: Prize) => void;
     onCancel: () => void;
+    phase: number;
+    answerIndex: number;
+    modifierIndex: number;
+    originalPrizeId: string;
 };
+
 
 function generarCodigoAleatorio() {
     // Código alfanumérico random 8 caracteres
     return Math.random().toString(36).slice(2, 10).toUpperCase();
 }
 
-function PrizeCreator({ onCreate, onCancel }: PrizeCreatorProps) {
+function PrizeCreator({
+    onCreate,
+    onCancel,
+    phase,
+    answerIndex,
+    modifierIndex,
+    originalPrizeId,
+}: PrizeCreatorProps) {
+
     const [type, setType] = useState<Prize["type"]>("discount");
     const [value, setValue] = useState<string>("");
+    const [baseChance, setBaseChance] = useState<number>(type === "discount" ? 10 : 5);
+
 
     const handleSubmit = async () => {
         if (type === "discount" && (isNaN(Number(value)) || Number(value) <= 0)) {
@@ -27,20 +42,22 @@ function PrizeCreator({ onCreate, onCancel }: PrizeCreatorProps) {
 
         // Generar code y baseChance por defecto
         const code = generarCodigoAleatorio();
-        const baseChance = type === "discount" ? 10 : 5; // ajusta estos valores según criterio
 
         try {
-            //ESTE ENDPOINT CAMBIARÁ PORQUE NO ES EL QUE QUEREMOS USAR
-            //PORQUE VA A METER UN PREMIO CON EL RESTO DE PRODUCTOS Y ESO NO PUEDE SER
-            //ASI
-            const res = await fetch("/api/add-prizes", {
+            const res = await fetch("/api/quiz/createModifierPrize", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    type,
-                    value: type === "discount" ? Number(value) : value.trim(),
-                    code,
-                    baseChance,
+                    originalPrizeId,
+                    newPrize: {
+                        type,
+                        value: type === "discount" ? Number(value) : value.trim(),
+                        code,
+                        baseChance, // ✔️ este es el bueno
+                    },
+                    phase,
+                    answerIndex,
+                    modifierIndex,
                 }),
             });
 
@@ -92,6 +109,20 @@ function PrizeCreator({ onCreate, onCancel }: PrizeCreatorProps) {
                     required
                 />
             </div>
+
+            <div>
+                <label className="block mb-1">Probabilidad base (%)</label>
+                <input
+                    type="number"
+                    min={0}
+                    max={100}
+                    value={baseChance}
+                    onChange={(e) => setBaseChance(Number(e.target.value))}
+                    className="w-full rounded bg-gray-600 p-2"
+                    required
+                />
+            </div>
+
 
             <div className="flex gap-2 justify-end">
                 <button
