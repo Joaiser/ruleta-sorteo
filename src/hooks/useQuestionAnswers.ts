@@ -196,13 +196,18 @@ export function useQuestionAnswers(initialPhase: number) {
         const currentModifier = answers[answerIdx]?.chanceModifiers[modIdx];
         const originalPrizeId = currentModifier?.prizeId;
 
-        if (!originalPrizeId) {
-            alert("No se encontró el ID del premio original.");
+        // Si es un nuevo modifier sin prizeId original
+        if (!originalPrizeId || originalPrizeId.trim() === "") {
+            console.warn("Creando un premio nuevo desde un modifier sin ID original");
+
+            // Puedes permitir la creación del premio sin `originalPrizeId` si lo haces opcional
+            // en tu backend. O manejarlo distinto. Por ahora devolvemos con alert:
+            alert("Este modificador no tiene aún un premio asignado. ¿Has creado el modificador correctamente?");
             return;
         }
 
         try {
-            await fetch("/api/prizes/createModifierPrize", {
+            await fetch("/api/prizes/createEmptyModifier", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
